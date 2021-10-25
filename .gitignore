@@ -1,6 +1,9 @@
 
 # Created by https://www.gitignore.io/api/vim,node
 
+cmd.lnk
+Git Bash.lnk
+
 ### Node ###
 # Logs
 logs

@@ -32,6 +32,7 @@ export const languages: Language[] = [
     require('./cpp'),
     require('./cpp11'),
     require('./cpp17'),
+    require('./cpp14-noi'),
     require('./cpp-noilinux'),
     require('./cpp11-noilinux'),
     require('./cpp11-clang'),
