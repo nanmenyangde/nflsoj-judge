@@ -63,12 +63,43 @@ async function parseYamlContent(obj: UserConfigFile, dataName: string): Promise<
         subtasks: obj.subtasks.map(s => ({
             score: s.score,
             type: parseScoringType(s.type),
-            cases: s.cases.map(c => ({
-                input: obj.inputFile ? filterPath(obj.inputFile.replace('#', c.toString())) : null,
-                output: obj.outputFile ? filterPath(obj.outputFile.replace('#', c.toString())) : null,
-                userOutputFile: obj.userOutput ? filterPath(obj.userOutput.replace('#', c.toString())) : null,
-                name: c.toString()
-            }))
+            cases: s.cases.map(c => {
+                let files = fse.readdirSync(dataPath);
+
+                function getFileNames(template, id) {
+                    let reg = new RegExp(filterPath(template.replace('#', id)));
+                    let p = [];
+                    for (let file of files) {
+                        if (reg.match(file) === file) p.push(file);
+                    }
+                    return p;
+                }
+
+                let o = {
+		    input : obj.inputFile ? getFileNames(filterPath(obj.inputFile), c.toString()) : null,
+		    output : obj.outputFile ? getFileNames(filterPath(obj.outputFile), c.toString()) : null,
+		    userOutputFile : obj.userOutput ? getFileNames(filterPath(obj.userOutput), c.toString()) : null
+		};
+	        let p = [];
+                if (obj.userOutput != null) {
+                    for (let userOutput of o.userOutputFile) {
+                        p.push({userOutputFile : userOutput, name : c.toString()});
+                        //p.push({userOutputFile : userOutput, name : userOutput.substring(0, userOutput.lastIndexOf("."))});
+                    }
+                } else {
+                    if (o.input.length != o.output.length) throw new Error("The lengths of input files and output files are not the same.");
+                    let len = o.input.length;
+                    for (let i=0; i<len; i++) {
+			  
+                        p.push({input : o.input[i], output : o.output[i], name : c.toString()});
+                        //p.push({input : o.input[i], output : o.output[i], name : o.input[i].subString(0, o.input[i].lastIndexOf("."))});
+                    }
+                }
+                return p;
+            }).reduce(
+                (cases, c) => cases.concat(c),
+                []
+            )
         })),
         spj: obj.specialJudge && await parseExecutable(obj.specialJudge, dataPath),
         extraSourceFiles: extraFiles,
