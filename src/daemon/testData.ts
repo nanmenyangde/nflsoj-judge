@@ -70,7 +70,7 @@ async function parseYamlContent(obj: UserConfigFile, dataName: string): Promise<
                     let reg = new RegExp(filterPath(template.replace('#', id)));
                     let p = [];
                     for (let file of files) {
-                        if (reg.match(file) === file) p.push(file);
+                        if (reg.test(file) && file.match(reg)[0] === file) p.push(file);
                     }
                     return p;
                 }
