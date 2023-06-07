@@ -83,16 +83,16 @@ async function parseYamlContent(obj: UserConfigFile, dataName: string): Promise<
 	        let p = [];
                 if (obj.userOutput != null) {
                     for (let userOutput of o.userOutputFile) {
-                        p.push({userOutputFile : userOutput, name : c.toString()});
-                        //p.push({userOutputFile : userOutput, name : userOutput.substring(0, userOutput.lastIndexOf("."))});
+                        //p.push({userOutputFile : userOutput, name : c.toString()});
+                        p.push({userOutputFile : userOutput, name : userOutput.substring(0, userOutput.lastIndexOf("."))});
                     }
                 } else {
                     if (o.input.length != o.output.length) throw new Error("The lengths of input files and output files are not the same.");
                     let len = o.input.length;
                     for (let i=0; i<len; i++) {
 			  
-                        p.push({input : o.input[i], output : o.output[i], name : c.toString()});
-                        //p.push({input : o.input[i], output : o.output[i], name : o.input[i].subString(0, o.input[i].lastIndexOf("."))});
+                        //p.push({input : o.input[i], output : o.output[i], name : c.toString()});
+                        p.push({input : o.input[i], output : o.output[i], name : o.input[i].substring(0, o.input[i].lastIndexOf("."))});
                     }
                 }
                 return p;
